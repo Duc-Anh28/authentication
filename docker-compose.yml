@@ -1,0 +1,33 @@
+version: '3.7'
+volumes:
+  java_authentication: {}
+networks:
+  java_authentication:
+    name: springboot-app-networks
+services:
+#  mysql-database:
+#    image: mysql:8.0
+#    container_name: mysql-database
+#    ports:
+#      - 2000:3306
+#    environment:
+#      MYSQL_PASSWORD: admin123
+#      MYSQL_ROOT_PASSWORD: admin123
+#      MYSQL_DATABASE: database-authentication
+#    volumes:
+#      - java_authentication:/var/lib/postgresql/data
+#    networks:
+#      - java_authentication
+  java-authentication-2:
+    image: authentication:v1
+    container_name: java-authentication-2
+    build: ./
+    ports:
+      - 2828
+      - :8080
+#    depends_on:
+#      - mysql-database
+    networks:
+      - java_authentication
+#    volumes:
+#      - java_authentication:/app
