@@ -1,6 +1,7 @@
 package com.example.authentication.controller;
 
 import com.example.authentication.Service.AccountService;
+import com.example.authentication.request.authentication.AccountRequest;
 import com.example.authentication.request.authentication.LoginRequest;
 import com.example.authentication.request.authentication.SignupRequest;
 import com.example.authentication.response.SuccessResponse;
@@ -36,11 +37,13 @@ public class AuthenticationController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/signup")
-    public ResponseEntity<SuccessResponse<SignupRequest>> updateAccount(@Validated @RequestBody SignupRequest request) {
-        var signupRequest = accountService.signupAccount(request);
-        SuccessResponse<SignupRequest> response =
-                new SuccessResponse<>(HttpStatus.OK.value(), null, signupRequest);
+    @PutMapping("/signup/{id}")
+    public ResponseEntity<SuccessResponse<?>> updateAccount(
+            @PathVariable("id") Long id,
+            @Validated @RequestBody AccountRequest request) {
+        var signupRequest = accountService.updateAccount(id, request);
+        SuccessResponse<?> response =
+                new SuccessResponse<>(HttpStatus.OK.value(), null, signupRequest.getId());
         return ResponseEntity.ok(response);
     }
 

@@ -9,6 +9,11 @@ import java.util.Optional;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
+
+    @Query("select x1 from Account x1 \n" +
+            " where x1.isDeleted = false and x1.id = :id")
+    Optional<Account> findById(Long id);
+
     @Query("select x1 from Account x1 \n" +
             " where x1.isDeleted = false and x1.email = :username")
     Optional<Account> findByEmail(String username);
