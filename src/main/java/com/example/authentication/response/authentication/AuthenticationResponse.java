@@ -15,12 +15,14 @@ import java.util.stream.Collectors;
 public class AuthenticationResponse {
     private Long accountId;
     private String email;
+    private String address;
     private List<String> roles;
     private String token;
 
     public AuthenticationResponse(Account account, String jwt) {
         this.accountId = account.getId();
         this.email = account.getEmail();
+        this.address = account.getAddress();
         this.roles = account.getRoles().stream().map(Role::getName).collect(Collectors.toList());
         this.token = jwt;
     }

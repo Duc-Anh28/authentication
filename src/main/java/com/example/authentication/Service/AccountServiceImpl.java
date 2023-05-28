@@ -4,6 +4,7 @@ import com.example.authentication.controller.exception.ArgumentException;
 import com.example.authentication.entity.Account;
 import com.example.authentication.repository.AccountRepository;
 import com.example.authentication.repository.RoleRepository;
+import com.example.authentication.request.authentication.AccountRequest;
 import com.example.authentication.request.authentication.LoginRequest;
 import com.example.authentication.request.authentication.SignupRequest;
 import com.example.authentication.response.authentication.AuthenticationResponse;
@@ -62,6 +63,14 @@ public class AccountServiceImpl implements AccountService {
             throw new ArgumentException(fieldName, "username.notfound");
         }
         return account.get();
+    }
+
+    @Override
+    public Account updateAccount(Long id, AccountRequest request) {
+        var ac = accountRepository.findById(id).get();
+        ac.setAddress(request.getAddress());
+        ac.setEmail(request.getEmail());
+        return accountRepository.save(ac);
     }
 
 }

@@ -22,6 +22,8 @@ public class Account extends BaseEntity {
 	private String email;
 	@Column(nullable = false)
 	private String password;
+	@Column(name = "address", length = 200)
+	private String address;
 	@Column(nullable = false)
 	@ColumnDefault("0")
 	private Boolean isActive;

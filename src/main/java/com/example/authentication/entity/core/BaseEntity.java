@@ -1,6 +1,7 @@
 package com.example.authentication.entity.core;
 
 import com.example.authentication.entity.Account;
+import com.example.authentication.util.CommonUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -52,4 +54,13 @@ public class BaseEntity {
         return modifiedBy;
     }
 
+    public Instant getCreatedAt() {
+        if (CommonUtil.isEmpty(createdAt)) return new Date().toInstant();
+        return createdAt;
+    }
+
+    public Instant getModifiedAt() {
+        if (CommonUtil.isEmpty(modifiedAt)) return new Date().toInstant();
+        return modifiedAt;
+    }
 }
