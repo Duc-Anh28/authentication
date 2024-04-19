@@ -3,31 +3,15 @@ volumes:
   java_authentication: {}
 networks:
   java_authentication:
-    name: springboot-app-networks
+    name: todo-app
 services:
-#  mysql-database:
-#    image: mysql:8.0
-#    container_name: mysql-database
-#    ports:
-#      - 2000:3306
-#    environment:
-#      MYSQL_PASSWORD: admin123
-#      MYSQL_ROOT_PASSWORD: admin123
-#      MYSQL_DATABASE: database-authentication
-#    volumes:
-#      - java_authentication:/var/lib/postgresql/data
-#    networks:
-#      - java_authentication
-  java-authentication-2:
+  java-authentication:
+    container_name: java-authentication
     image: authentication:v1
-    container_name: java-authentication-2
     build: ./
     ports:
-      - 2828
-      - :8080
-#    depends_on:
-#      - mysql-database
+      - 2828:2828
     networks:
       - java_authentication
-#    volumes:
-#      - java_authentication:/app
+    volumes:
+      - java_authentication:/app

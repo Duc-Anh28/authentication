@@ -5,11 +5,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.data.domain.Sort;
 
 import java.io.IOException;
 import java.security.SecureRandom;
-import java.text.*;
+import java.text.DecimalFormat;
+import java.text.Normalizer;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
@@ -161,46 +163,7 @@ public class CommonUtil {
      * @return String[] Pair of date
      * 0: From
      * 1: To
-     */
-//    public static String[] getPeriodOfDateString(PeriodDateType type, String format) {
-//        String fromDate = "";
-//        String toDate = "";
-//        Calendar cal = Calendar.getInstance();
-//        DateFormat dateFormat = new SimpleDateFormat(format);
-//        switch (type) {
-//            case YESTERDAY -> {
-//                cal.add(Calendar.DATE, -1);
-//                fromDate = dateFormat.format(cal.getTime());
-//                toDate = dateFormat.format(new Date());
-//            }
-//            case LAST_WEEK -> {
-//                cal.setFirstDayOfWeek(Calendar.MONDAY);
-//                int i = cal.get(Calendar.DAY_OF_WEEK) - cal.getFirstDayOfWeek();
-//                cal.add(Calendar.DATE, -i - 7);
-//                fromDate = dateFormat.format(cal.getTime());
-//                cal.add(Calendar.DATE, 6);
-//                toDate = dateFormat.format(new Date());
-//            }
-//            case LAST_MONTH -> {
-//                cal.add(Calendar.MONTH, -1);
-//                cal.set(Calendar.DAY_OF_MONTH, cal.getActualMinimum(Calendar.DAY_OF_MONTH));
-//                fromDate = dateFormat.format(cal.getTime());
-//                cal.add(Calendar.MONTH, 1);
-//                toDate = dateFormat.format(cal.getTime());
-//            }
-//            case LAST_YEAR -> {
-//                cal.add(Calendar.YEAR, -1);
-//                cal.set(Calendar.DAY_OF_YEAR, 1);
-//                fromDate = dateFormat.format(cal.getTime());
-//                cal.add(Calendar.YEAR, 1);
-//                toDate = dateFormat.format(cal.getTime());
-//            }
-//            default -> {
-//            }
-//        }
-//
-//        return new String[]{fromDate, toDate};
-//    }
+     *
 
     /***
      * Check string null or empty
@@ -277,31 +240,6 @@ public class CommonUtil {
                 }
 
                 if (n != list.size() - 1) {
-                    builder.append(deliStr);
-                }
-            }
-
-            return builder.toString();
-        }
-    }
-
-    public static String join(String[] list, String deliStr, boolean encloseStr) {
-        if (list == null) {
-            return "";
-        } else {
-            StringBuilder builder = new StringBuilder();
-
-            for (int n = 0; n < list.length; ++n) {
-                if (encloseStr) {
-                    builder.append("\"");
-                }
-
-                builder.append(list[n]);
-                if (encloseStr) {
-                    builder.append("\"");
-                }
-
-                if (n != list.length - 1) {
                     builder.append(deliStr);
                 }
             }
@@ -395,22 +333,6 @@ public class CommonUtil {
         return n + ".0";
     }
 
-//    public static String getFormatDateRange(String dateFrom, String dateTo) throws ParseException {
-//        if (CommonUtil.isNullOrEmpty(dateFrom) && CommonUtil.isNullOrEmpty(dateTo)) return "";
-//        return CommonUtil.getDateString(
-//                        dateFrom,
-//                        PatternType.DATE_FORMAT_YYYYMMDD,
-//                        PatternType.DATE_FORMAT_FORWARD_SLASH_YYYYMMDD
-//                )
-//                .concat(" ~ ")
-//                .concat(
-//                        CommonUtil.getDateString(
-//                                dateTo,
-//                                PatternType.DATE_FORMAT_YYYYMMDD,
-//                                PatternType.DATE_FORMAT_FORWARD_SLASH_YYYYMMDD
-//                        )
-//                );
-//    }
     public static  String generatePassword() {
         final String s1 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         final String s2 = "abcdefghijklmnopqrstuvwxyz";
@@ -496,13 +418,6 @@ public class CommonUtil {
         return stampTimeToDate(stampTime).toInstant();
     }
 
-    /*
-     * @author: TungPhung
-     * @since: 25/11/2022 13:52
-     * @description:  Function find duplicate value
-     * @update:
-     *
-     * */
     public static Set<String> findDuplicate(List<?> list) {
         Set<String> setCheck = new HashSet<>();
         Set<String> setToReturn = new HashSet<>();
@@ -516,26 +431,12 @@ public class CommonUtil {
         return setToReturn;
     }
 
-    /*
-     * @author: TungPhung
-     * @since: 01/12/2022 9:53
-     * @description:  Function find all item not exist in list container (list Long)
-     * @update:
-     *
-     * */
     public static Set<?> findNotExist(List<?> listContainer, List<?> listItem) {
         Set<?> listReturn = new HashSet<>(listContainer);
         listItem.forEach(listReturn::remove);
         return listReturn;
     }
 
-    /*
-     * @author: TungPhung
-     * @since: 01/12/2022 9:53
-     * @description:  Function find all item not exist in list container (list String)
-     * @update:
-     *
-     * */
     public static List<String> findNotExistString(List<String> listContainer, List<String> listItem) {
         List<String> listReturn = new ArrayList<>(listContainer);
         listReturn.removeAll(listItem);
@@ -569,14 +470,7 @@ public class CommonUtil {
                 "_" +
                 numberFormat;
     }
-    
-    /*
-    * @author: TungPhung
-    * @since: 19/12/2022 17:10
-    * @description:  Function get last day of this month
-    * @update:
-    *
-    * */
+
     public static String getLastDayOfMonth(Long year, Long month){
         String date = month + "/" + "1/" + year;
         LocalDate convertedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("M/d/yyyy"));
@@ -584,14 +478,7 @@ public class CommonUtil {
                 convertedDate.getMonth().length(convertedDate.isLeapYear()));
         return convertedDate.toString();
     }
-    
-    /*
-    * @author: TungPhung
-    * @since: 19/12/2022 17:10
-    * @description:  Function get first day of next month
-    * @update:
-    *
-    * */
+
     public static String getFirstDayOfNextMonth(Long year, Long month){
         String date = month + "/" + "1/" + year;
         LocalDate convertedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("M/d/yyyy"));
@@ -634,17 +521,6 @@ public class CommonUtil {
         list.sort(comparatorFirst.thenComparing(comparatorSecond));
         return list;
     }
-//    public static <T> List<T> sortListByModifiedAtDesc(List<T> list, Function<T, Long> function) {
-//        if (isEmpty(list)) return list;
-//        return list.stream().sorted(
-//                (o1, o2) ->
-//                {
-//                    var x = function.apply(o1);
-//                    var y = function.apply(o2);
-//                    return (int) (y - x);
-//                }
-//        ).collect(Collectors.toList());
-//    }
 
     public static <T> HashMap<T, Integer> informationBasedOnStatus(List<Integer> list, List<T> data) {
         HashMap<T, Integer> mapByStatus = new HashMap<T, Integer>();
@@ -662,8 +538,6 @@ public class CommonUtil {
         }
         return mapByStatus;
     }
-
-
 
     public static List<Integer> getNumberDayInMonth(Integer month, Integer year) {
         List<Integer> listMonth = new ArrayList<>();
@@ -691,14 +565,10 @@ public class CommonUtil {
         return workDays.size();
     }
 
-
-
     public static String getStringJson(String s) {
         if (CommonUtil.isEmpty(s)) return "";
         return s.replaceAll("[^a-zA_Z,-0-9]", "").replaceAll(",", ", ");
     }
-
-
 
     public static String removeVietnameseAccent(String value) {
         String temp = Normalizer.normalize(value, Normalizer.Form.NFD);

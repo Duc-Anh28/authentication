@@ -1,15 +1,13 @@
 package com.example.authentication.security;
 
 import com.example.authentication.Service.AccountService;
-import com.example.authentication.entity.Account;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -19,25 +17,25 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-
+@Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
     @Value("${jwt.prefix}")
     private String jwtPrefix;
-    private final AccountService userService;
+    private final UserDetailsService userDetailsService;
     private final JwtUtils jwtUtils;
-    @Autowired
-    public JwtRequestFilter(AccountService userService, JwtUtils jwtUtils) {
-        this.userService = userService;
-        this.jwtUtils = jwtUtils;
-    }
+    private final AccountService accountService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain chain
+    ) throws ServletException, IOException {
         final String authorization = request.getHeader("Authorization");
+        log.info("getRequestURI: " + request.getRequestURI());
         String jwt = null;
         String email = null;
         if (authorization != null && authorization.startsWith(jwtPrefix)) {
@@ -45,15 +43,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             email = jwtUtils.extractUsername(jwt);
         }
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            Account ue = userService.getAccountByEmail(email, "email");
-            List<GrantedAuthority> authorities = new ArrayList<>();
-            for (var role : ue.getRoles()) {
-                authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
-            }
-            UserDetails ud = new User(ue.getId().toString(), ue.getPassword(), authorities);
+            UserDetails user = userDetailsService.loadUserByUsername(email);
             if (jwtUtils.isTokenValid(jwt, email)) {
-                UsernamePasswordAuthenticationToken userAuthentication = new UsernamePasswordAuthenticationToken(
-                        ud, ue, ud.getAuthorities());
+                var userAuthentication = new UsernamePasswordAuthenticationToken(user, jwt, user.getAuthorities());
                 userAuthentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(userAuthentication);
             }

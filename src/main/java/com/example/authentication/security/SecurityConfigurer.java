@@ -2,6 +2,7 @@ package com.example.authentication.security;
 
 import com.example.authentication.type.ERole;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -17,7 +18,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public SecurityConfigurer(JwtRequestFilter jwtRequestFilter, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
-        this.jwtRequestFilter = jwtRequestFilter;
+            this.jwtRequestFilter = jwtRequestFilter;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     }
 
@@ -28,15 +29,16 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .antMatchers("/swagger-ui/**").permitAll()
                 .antMatchers("/v2/api-docs").permitAll()
                 .antMatchers("/webjars/**").permitAll()
-                .antMatchers("/swagger-resources/**").permitAll()
+                .antMatchers("/swagger-resources/**","/fire-base","/fcm-token").permitAll()
                 // other
-                .antMatchers("/login","/signup/**").permitAll()
-                .antMatchers("/hello").hasRole(ERole.USER.getRole())
-                .antMatchers("/goodbye").hasAnyRole(ERole.ADMIN.getRole())
+                .antMatchers("/login").permitAll()
+                .antMatchers(HttpMethod.GET, "/accounts/**").hasAnyRole(ERole.ADMIN.name())
+                .antMatchers(HttpMethod.POST, "/accounts").hasAnyRole(ERole.ADMIN.name())
+                .antMatchers(HttpMethod.PUT, "/accounts/**").hasAnyRole(ERole.ADMIN.name())
                 .anyRequest().authenticated()
+                .and().exceptionHandling()
                 .and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.headers().disable();
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }

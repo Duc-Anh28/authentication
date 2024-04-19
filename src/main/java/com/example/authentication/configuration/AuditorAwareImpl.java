@@ -9,8 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 
-public class
-AuditorAwareImpl implements AuditorAware<Account> {
+public class AuditorAwareImpl implements AuditorAware<Account> {
 
     public Optional<Account> getCurrentAuditor() {
         return Optional.ofNullable(SecurityContextHolder.getContext())

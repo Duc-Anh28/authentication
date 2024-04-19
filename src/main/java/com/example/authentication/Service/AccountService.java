@@ -1,15 +1,23 @@
 package com.example.authentication.Service;
 
 import com.example.authentication.entity.Account;
-import com.example.authentication.request.authentication.AccountRequest;
-import com.example.authentication.request.authentication.LoginRequest;
-import com.example.authentication.request.authentication.SignupRequest;
-import com.example.authentication.response.authentication.AuthenticationResponse;
+import com.example.authentication.request.account.AccountFilterRequest;
+import com.example.authentication.request.account.AccountUpdateRequest;
+import com.example.authentication.request.account.CreateAccountRequest;
+import com.example.authentication.response.PageResponse;
+import com.example.authentication.response.account.AccountResponse;
 
 public interface AccountService {
-    SignupRequest signupAccount(SignupRequest request);
-    AuthenticationResponse login(LoginRequest form);
+    Account getAccountSecurityByEmail(String email, String fieldName);
+    Account getAccountById(Long accountId, String fieldName);
+
     Account getAccountByEmail(String email, String fieldName);
 
-    Account updateAccount( Long id,AccountRequest request);
+    AccountResponse createAccount(CreateAccountRequest request);
+
+    Account updateAccount(Long accountId, AccountUpdateRequest request);
+
+    AccountResponse getAccountDetail(Long accountId);
+
+    PageResponse<AccountResponse> getListAccount(AccountFilterRequest request);
 }
