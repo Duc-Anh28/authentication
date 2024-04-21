@@ -1,14 +1,17 @@
 package com.example.authentication.request;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import javax.validation.constraints.Max;
 
 @Data
 public class PagingRequest {
-//    @ApiModelProperty(example = "1")
+    @ApiModelProperty(example = "1")
     private String pageNum;
 
-//    @Max(value = 3000, message = "{displayNumber.max-size}")
-//    @ApiModelProperty(example = "20")
+    @Max(value = 3000, message = "{displayNumber.max-size}")
+    @ApiModelProperty(example = "20")
     private String pageSize;
 
     public Integer getPageNum() {

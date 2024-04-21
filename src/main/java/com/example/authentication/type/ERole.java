@@ -1,7 +1,7 @@
 package com.example.authentication.type;
 
 public enum ERole {
-    ADMIN ("ADMIN", "ROLE_ADMIN"),
+    ADMIN("ADMIN", "ROLE_ADMIN"),
     USER("USER", "ROLE_USER");
 
     private final String role;

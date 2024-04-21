@@ -1,23 +1,28 @@
 package com.example.authentication.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import com.example.authentication.entity.core.BaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "roles")
-@Entity
-public class Role {
+public class Role extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "name", nullable = false)
     private String name;
-    @JsonIgnore
-    @ManyToMany(mappedBy = "roles")
-    private List<Account> accounts;
+
+//    @JsonIgnore
+//    @ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @Where(clause = "is_deleted = false")
+//    private List<Account> accounts;
 }
