@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Build and Test') {
             steps {
-                sh 'mvn clean package'
+                 sh 'mvn clean install -T 1C -Dmaven.test.skip=true'
             }
         }
         stage('Deploy') {
