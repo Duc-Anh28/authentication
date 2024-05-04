@@ -4,13 +4,10 @@ import com.example.authentication.Service.AuthenticationService;
 import com.example.authentication.Service.FirebaseService;
 import com.example.authentication.Service.RateLimitingService;
 import com.example.authentication.controller.exception.ApplicationException;
-import com.example.authentication.request.FcmRequest;
 import com.example.authentication.request.authentication.LoginRequest;
 import com.example.authentication.response.SuccessResponse;
 import com.example.authentication.response.account.AccountResponse;
 import com.example.authentication.response.authentication.AuthenticationResponse;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -21,8 +18,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequiredArgsConstructor
@@ -59,29 +54,29 @@ public class AuthenticationController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/fire-base")
-    public ResponseEntity<SuccessResponse<?>> fireBase(@RequestBody FcmRequest request) {
-        var a = firebaseService.sendFcmMessage(request);
-//        System.out.println("firebaseService.saveFirebase() " + firebaseService.saveFirebase(request));
-        var message = messageSource.getMessage("login.success", null, LocaleContextHolder.getLocale());
-        SuccessResponse<?> response = new SuccessResponse<>(
-                HttpStatus.OK.value(),
-                message,
-                null
-        );
-        return ResponseEntity.ok(response);
-    }
+//    @PostMapping("/fire-base")
+//    public ResponseEntity<SuccessResponse<?>> fireBase(@RequestBody FcmRequest request) {
+//        var a = firebaseService.sendFcmMessage(request);
+//        var message = messageSource.getMessage("login.success", null, LocaleContextHolder.getLocale());
+//        SuccessResponse<?> response = new SuccessResponse<>(
+//                HttpStatus.OK.value(),
+//                message,
+//                null
+//        );
+//        return ResponseEntity.ok(response);
+//    }
 
-    @GetMapping("/fcm-token")
-    public ResponseEntity<String> getFcmToken(HttpServletRequest request) {
-        String idToken = request.getHeader("Authorization"); // Get the Firebase ID token from the Authorization header
-        try {
-            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
-            String fcmToken = decodedToken.getClaims().get("fcm_token").toString();
-            return ResponseEntity.ok(fcmToken);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().body("Error verifying Firebase ID token");
-        }
-    }
+//    @GetMapping("/fcm-token")
+//    public ResponseEntity<String> getFcmToken(HttpServletRequest request) {
+//        String idToken = request.getHeader("Authorization"); // Get the Firebase ID token from the Authorization header
+//        try {
+//            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+//            String fcmToken = decodedToken.getClaims().get("fcm_token").toString();
+//            return ResponseEntity.ok(fcmToken);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.badRequest().body("Error verifying Firebase ID token");
+//        }
+//    }
+
 }
