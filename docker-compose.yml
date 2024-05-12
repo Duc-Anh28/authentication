@@ -1,0 +1,17 @@
+version: '3.7'
+volumes:
+  java_authentication: { }
+networks:
+  java_authentication:
+    name: todo-app
+services:
+  java-authentication:
+    container_name: java-authentication
+    image: authentication:v1
+    build: ./
+    ports:
+      - 2828:2828
+    networks:
+      - java_authentication
+    volumes:
+      - java_authentication:/app
